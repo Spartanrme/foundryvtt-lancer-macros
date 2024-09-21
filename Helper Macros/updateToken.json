@@ -1,0 +1,28 @@
+{
+  "folder": "LlQLnpIZjC3TS5Jj",
+  "name": "updateToken",
+  "type": "script",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "// Update \"token\" based on args\n// args: a tuple [string, number] where string is the update path and number is the update value\nconst args = scope.args ? scope.args : null;\nconst tokenId = scope.tokenId ? scope.tokenId : null;\n\n// Nothing to update\nif(args === null){\n    return;\n}\n// Get token\nlet token = canvas.tokens.placeables.find(x => x.id === tokenId);\n\nif(token === undefined) return ui.notifications.error(\"Cannot find token to update.\");\n\n// Update the token with args\ntoken.actor.update({\n    [args[0]]:args[1]\n});",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": "GM"
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1725916626954,
+    "modifiedTime": 1725975286202,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}

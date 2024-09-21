@@ -1,0 +1,28 @@
+{
+  "folder": "LlQLnpIZjC3TS5Jj",
+  "name": "updateTokenOwnership",
+  "type": "script",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const tokenId = scope.tokenId ? scope.tokenId : null;\nconst owner = scope.owner ? scope.owner : CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;\n\n// Get token\nlet target = canvas.tokens.placeables.find(x => x.id === tokenId);\n\nif(target === undefined){\n    return ui.notifications.error(\"No target to update ownership of!\");\n}\n\nconst update = {default: owner};\n// loop accounts for if player has preexisting lower perms\nfor(const id of game.users.keys()){\n    update[id] = owner;\n    await target.actor.update({ownership: update});\n}",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": "GM"
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726103590462,
+    "modifiedTime": 1726234282700,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}

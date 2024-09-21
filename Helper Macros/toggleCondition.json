@@ -1,0 +1,28 @@
+{
+  "folder": "LlQLnpIZjC3TS5Jj",
+  "name": "toggleCondition",
+  "type": "script",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const tokenId = scope.tokenId ? scope.tokenId : null;\nconst conditionId = scope.condition ? scope.condition : null;\nconst replace = scope.replace ? scope.replace : false;\n\n// Find the effect\nconst effect = CONFIG.statusEffects.find(e => e.id === conditionId);\nif (effect === undefined) return ui.notifications.error(\"No effect with id \\\"\" + conditionId + \"\\\" found.\");\n// Get the token\nlet actor = canvas.tokens.placeables.find(x => x.id === tokenId);\nif (actor === undefined) return ui.notifications.error(\"Cannot find token to update.\");\n\nif(replace){\n    await actor.document.toggleActiveEffect(effect);\n}else{\n    if(actor.document.hasStatusEffect(condition)){\n        return;\n    }\n    await actor.document.toggleActiveEffect(effect);\n}",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": "GM"
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1725577284031,
+    "modifiedTime": 1725975285081,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Get-Alive-NHP-Count",
+  "type": "script",
+  "scope": "global",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "command": "let count = 0;\n\ntoken.actor.system.loadout.systems.forEach(system =>{\n    if(system?.value?.name?.includes(\"NHP\")\n    && !system?.value?.system?.destroyed){\n        count++;\n    }\n});\n\nreturn count;",
+  "folder": "Wc2hkEpWqTmPuMcu",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": ""
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726238418765,
+    "modifiedTime": 1726239835917,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}

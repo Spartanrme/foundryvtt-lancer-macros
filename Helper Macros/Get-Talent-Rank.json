@@ -1,0 +1,35 @@
+{
+  "name": "Get-Talent-Rank",
+  "type": "script",
+  "author": "yE5b4Zs0UNLxP8gv",
+  "img": "https://assets.forge-vtt.com/bazaar/core/icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "// The name of the talent\nconst talName = scope.talentName ? scope.talentName : \"NON\";\n\nif(canvas.tokens.controlled.length !=  1)\n    return ui.notifications.info(\"Please select only one token!\");\n\nlet itemMap = await canvas.tokens.controlled[0].actor.system.pilot.value.items.contents;\n\nlet modId = \"\";\nlet modIndex = 0;\nfor (let i = 0; i < itemMap.length; i++) {\n\tlet moduleName = await itemMap[i].name;\n\tif (moduleName === talName) {\n\t\treturn itemMap[i].system.curr_rank;\n\t};\n};\n\nreturn 0;",
+  "folder": "Wc2hkEpWqTmPuMcu",
+  "flags": {
+    "combat-utility-belt": {
+      "macroTrigger": ""
+    },
+    "advanced-macros": {
+      "runAsGM": false,
+      "runForSpecificUser": ""
+    },
+    "condition-lab-triggler": {
+      "macroTrigger": ""
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": null,
+    "modifiedTime": 1725975337961,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}
