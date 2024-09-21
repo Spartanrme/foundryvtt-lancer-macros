@@ -1,0 +1,28 @@
+{
+  "folder": "h33QOhEZ3uTO1lEM",
+  "name": "Round-Start-Fuller-Roll",
+  "type": "script",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/pings/chevron.webp",
+  "scope": "global",
+  "command": "ui.notifications.notify(\"Activating fuller roll automations.\");\n\nHooks.on(\"updateCombat\", async (combat, updates, options, userId) => {\n\t// Return if the use isn't the GM or if it isn't the start of a new round\n\tif(!game.user.isGM || !foundry.utils.hasProperty(updates, \"round\")){\n\t\treturn;\n\t}\n\tlet check = new Roll(`1d6`);\n\tawait check.roll();\n\n\tlet mainResultText = ``;\n\tmainResultText = `<span style=\"text-align:left;margin-left:5px\">${check.terms[0].number}d${check.terms[0].faces}</span>`;\n\n\tlet content =\n\t\t`\n\t\t<div class=\"card clippled-bot\" style=margin:0px\">\n\t\t   <div class=\"lancer-header\">// Fuller Advice Roll //</div>\n\t\t   <div class=\"dice-roll lancer-dice-roll\">\n\t\t\t  <div class=\"dice-result\">\n\t\t\t\t <div class=\"dice-formula lancer-dice-formula flexrow\">\n\t\t\t\t\t${mainResultText}\n\t\t\t\t\t<span class=\"dice-total lancer-dice-total major\">${check.total}</span>\n\t\t\t\t </div>\n\t\t\t\t <div style=\"text-align:left\">\n\t\t\t\t\t<div class=\"dice-tooltip\" style=\"display: none;\">\n\t\t\t\t\t   <section class=\"tooltip-part\">\n\t\t\t\t\t\t  <div class=\"dice\">\n\t\t\t\t\t\t\t <header class=\"part-header flexrow\">\n\t\t\t\t\t\t\t\t<span class=\"part-formula\">${check.terms[0].number}d${check.terms[0].faces}</span>\n\t\t\t\t\t\t\t\t<span class=\"part-total\">${check.terms[0].total}</span>\n\t\t\t\t\t\t\t </header>\n\t\t\t\t\t\t  </div>\n\t\t\t\t\t   </section>\n\t\t\t\t\t</div>\n\t\t\t\t </div>\n\t\t\t  </div>\n\t\t   </div>\n\t\t</div>\n\t\t`;\n\n\tawait ChatMessage.create({\n\t\ttype: CONST.CHAT_MESSAGE_TYPES.ROLL,\n\t\trolls: [check],\n\t\tuser: game.user._id,\n\t\tcontent: content\n\t});\n});",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": "runAsWorldScript"
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726744732532,
+    "modifiedTime": 1726751428248,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}
