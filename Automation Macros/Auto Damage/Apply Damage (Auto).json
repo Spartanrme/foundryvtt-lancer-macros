@@ -1,0 +1,32 @@
+{
+  "name": "Apply Damage (Auto)",
+  "type": "script",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "https://assets.forge-vtt.com/65a0b66f9b28a81ae785ea58/worlds/lancer-voidstorm/world-assets/utility-images/tiko-lancer-icons/Lancer%20Status%20Icon%20DMG_EXPLOSIVE.png",
+  "scope": "global",
+  "command": "/*\nLancer Apply Damage - Automated, Kind Of!\n\nREQUIRES my Apply Damage macro (and requires it to be named 'Apply Damage'), plus Warpgate and Math.js.\n\n\nThis macro adds a little automation to my other macro- mostly it just saves you from having to enter DAMAGE yourself.\n\nSpecifically, running this macro does the following:\n1. look through the last few (default: 3) chat messages, starting from the most recent, to find a Weapon card.\n2. Once found, it digs through the weapon card and extracts the rolled damage values.\n3. Passes said damage value to the Apply Damage macro, automatically filling out the default value as appropriate.\n\nYou still have to check for resistance and click the damage type.\n\nTO-DO: pass damage type to the macro too. It won't actually save any steps, because damage type buttons double as confirmation, but I think it'd look nice.\n\n\nCHANGELOG\n\nv1.1: Compatiability for FoundryV11; thanks to Zenn. \nv1.2: now passes damage type to the apply damage macro; assuming you are using the most recent apply-damage macro, it should now color the correct damage type when passed to the apply-damage macro. useful for weapons that have multiple damage types.\nPlease use alongside applydamage_base_v3_4 or higher.\n*/\nlet damageArray = [];\nlet num = 0;\nfor (let i = -1; i >= -3; i--) {\n    let message = [...game.messages].at(i);\n    if (typeof message.flags.lancer != 'undefined' && typeof message.flags.lancer.attackData != 'undefined') {\n        // i.e \"this is a WEAPON card\". Conveniently, invade cards don't have this flag.\n\n\t\tlet content = message.content;\n\t\tconsole.log(message);\n\t\tlet contentArray = content.split('\\n')\n\t\tconsole.log(contentArray)\n\t\tcontentArray = contentArray.filter((line) => line.includes(\"lancer-dice-total major\"))\n\t\tcontentArray = contentArray.filter((line) => line.includes(\"damage\"))\n\t\t\n\t\tlet damageArray = []\n\t\tconst numreg = /\\d+/;\n\t\t\n\t\tcontentArray.forEach(line => {\n\t\t\tconsole.log(line)\n\t\t\tconsole.log(line.match(numreg)[0])\n\t\t\tdamageArray.push([parseInt(line.match(numreg)[0]), checkDamage(line)]) //get damage number AND type\n\t\t})\n\t\t\n\t\tif(content.includes(\"// SELF HEAT //\")){\n\t\t    // Skip the last damage number, as that is the self heat\n            console.log(\"POP\");\n\t\t    damageArray.pop();\n\t\t}\n\t\t/*\n        let rollData = message.rolls[0].terms[0];\n        let terms = rollData.terms; // all the formulae.\n        let results = rollData.results; // all the RESULTS.\n\n        for (let j = 0; j < terms.length; j++) {\n            let t = terms[j];\n            if (t.indexOf('1d20') == -1) { // i.e this is NOT AN ATTACK ROLL\n                damageArray.push(parseInt(results[j].result));\n                // ui.notifications.info(results[j].result)\n            }\n        }\n\t\t*/\n\t\tconsole.log(damageArray)\n        if (damageArray.length > 0) {\n            let attackingToken = game.actors.get(message.flags.lancer.attackData.origin)\n            if (typeof attackingToken != 'undefined') {\n                ui.notifications.info(\"Extracted damage values from \" + attackingToken.name + \"\\'s last attack.\")\n            }\n            let applyDamageMacro = game.macros.getName('Apply Damage');\n            let currentIndex = damageArray.length;\n            if (applyDamageMacro) {\n                damageArray.reduceRight((_, dmg) => \n                {\n                    applyDamageMacro.execute({args: dmg, windowCount:currentIndex, windowTotal:damageArray.length})\n                    currentIndex--;\n                    num++;\n                }, null);\n                //damageArray.forEach((dmg, index) => applyDamageMacro.execute({args: dmg, windowCount:index, windowTotal:damageArray.length}));\n            } else {\n                ui.notifications.error(\"Macro 'Apply Damage' not found.\");\n            }\n            break;\n        }\n    }\n}\n\nif(num === 0){\n    game.macros.getName('Apply Damage').execute({args: [], windowCount:1, windowTotal:1})\n}\n\nfunction checkDamage(line){\n\tlet damagetypes = [\"energy\", \"explosive\", \"kinetic\", \"heat\", \"burn\"]\n\tfor(let type of damagetypes){\n\t\tif(line.includes(type)){\n\t\t\treturn type\n\t\t}\n\t}\n\t\n}",
+  "folder": null,
+  "flags": {
+    "condition-lab-triggler": {
+      "macroTrigger": ""
+    },
+    "advanced-macros": {
+      "runForSpecificUser": ""
+    },
+    "core": {},
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1722802052626,
+    "modifiedTime": 1726956084425,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}
