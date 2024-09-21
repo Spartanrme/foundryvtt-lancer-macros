@@ -1,0 +1,28 @@
+{
+  "folder": "h33QOhEZ3uTO1lEM",
+  "name": "Automate-Resist-Heat-Actor",
+  "type": "script",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "ui.notifications.notify(\"Activating resist heat automations.\");\n\n// Automation for halving heat if the actor has a status named \"Resist Heat\"\nHooks.on(\"preUpdateActor\", async (state, updates, options, userId) => {\n\t// Exit if no updates to heat were detected\n\tif(!foundry.utils.hasProperty(updates, \"system.heat\")){\n\t\treturn;\n\t}\n\t// Exit if actor doesn't have the resist heat status\n\tif(!state.statuses.has(\"resist_heat\")){\n\t\treturn;\n\t}\n\tlet currentHeat = state.system.heat.value; \n\tlet updateHeat = updates.system.heat.value;\n\t// Get how much the heat was updated by\n\tlet tempHeat = updateHeat - currentHeat;\n\t// Don't reduce\n\tif(tempHeat <= 0){\n\t\treturn;\n\t}else{\n\t\t// Half the heat round up\n\t\ttempHeat = Math.ceil(tempHeat / 2);\n\t\t// Add to current heat\n\t\ttempHeat += currentHeat;\n\t}\n\t//console.log(\"Current: \"+currentHeat); \n\t//console.log(\"Update: \"+updateHeat);\n\t//console.log(\"Temp: \" + tempHeat);\n\tupdates.system.heat.value = tempHeat;\n});",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": "runAsWorldScript"
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726772390827,
+    "modifiedTime": 1726946296053,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}
