@@ -1,0 +1,28 @@
+{
+  "folder": "l5AhmXZBrmXkYXTg",
+  "name": "Stormbender (Dice)",
+  "type": "script",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/magic/lightning/bolt-cloud-sky-green.webp",
+  "scope": "global",
+  "command": "// Cancel the macro if no token is selected\nif(canvas.tokens.controlled.length != 1)\n    return ui.notifications.error(\"Select 1 token. You have \" + canvas.tokens.controlled.length + \" selected.\");\n\n// Icon names and paths\nlet dieId = \"torrent_die\";\nlet diePath = CONFIG.statusEffects.find(x => x.id === dieId).icon; // filepath of icon\n\n// Set icon if not set\nif(!token.document.hasStatusEffect(dieId)){\n    await game.macros.getName(\"toggleCondition\").execute({tokenId:token.id, condition:dieId, replace:false});\n    await EffectCounter.findCounter(token, diePath).setValue(6);\n}\n\n// Chat items\nlet chatTitle = \"Stormbending\";\nlet description = \"\";\n\n// Get the count of the die\nlet count = await EffectCounter.findCounterValue(token.document, diePath) ?? 0;\n\n// Decrement Die unless at 1, in which case reset it\nif(count > 1){\n    await EffectCounter.findCounter(token, diePath).setValue((count - 1));\n    description = \"Torrent die decreased to \" + (--count) + \".\";\n    if(count === 1){\n        description += \" Massive Attack (Full Action) is ready. The next time you run this macro, Massive Attack will be used and the die will reset to 6.\";\n    }\n    let msgContent = `<div class=\"card clipped-bot\" style=\"margin: 0px;\">\n            <div class=\"card clipped\">\n                <div class=\"lancer-mini-header\" >${chatTitle}</div>\n                        <div class=\"lancer-mini-header\"> // EFFECT // </div>\n                        <div class=\"effect-text\">\n                            <ul>${description}</ul>\n                        </div>\n            </div>\n                    </div>`\n    ChatMessage.create({ \n        speaker: ChatMessage.getSpeaker({\n            actor: game.macros.getName(\"Get-Speaker\").execute()\n        }),\n        content: msgContent \n    });\n}else{\n    await game.macros.getName(\"toggleCondition\").execute({tokenId:token.id, condition:dieId, replace:false});\n    await EffectCounter.findCounter(token, diePath).setValue(6);\n    // Chat Message\n    // Get save target for mech\n    let saveTarget = token.actor.system.save;\n    description = \"Reset your Torrent Die to 6, then target a character within line of sight and Range 15: they must succeed on an Agility save (DC:\" + saveTarget + \") or take [[2d6]] Explosive damage, become Stunned until the end of their next turn, and be knocked Prone. On a success, they take half damage and are knocked Prone but not Stunned.\";\n    let msgContent = `<div class=\"card clipped-bot\" style=\"margin: 0px;\">\n\t\t\t\t<div class=\"card clipped\">\n\t\t\t\t\t<div class=\"lancer-mini-header\" >${chatTitle}</div>\n\t\t\t\t\t        <div class=\"lancer-mini-header\"> // EFFECT // </div>\n\t\t\t\t\t        <div class=\"effect-text\">\n\t\t\t\t\t            <ul>${description}</ul>\n\t\t\t\t\t        </div>\n\t\t\t\t</div>\n                      </div>`\n    ChatMessage.create({ \n        speaker: ChatMessage.getSpeaker({\n            actor: game.macros.getName(\"Get-Speaker\").execute()\n        }),\n        content: msgContent });\n}",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": ""
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726235590802,
+    "modifiedTime": 1726243972617,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Bend Probability",
+  "type": "script",
+  "author": "yE5b4Zs0UNLxP8gv",
+  "img": "https://assets.forge-vtt.com/65a0b66f9b28a81ae785ea58/worlds/lancer-voidstorm/world-assets/utility-images/tiko-macro-icons/reaction_purple-defense.png",
+  "scope": "global",
+  "command": "let check1 = await new Roll(`1d20`).roll({async:true});\nlet check2 = await new Roll(`1d20`).roll({async:true});\nlet checkTotal1 = check1.total;\nlet checkTotal2 = check2.total;\n\nlet triggerDesc = \"Roll 2d20 and note the results: X and Y. These numbers are lost at the end of your next turn. Gain the Probabilistic Cannibalism reaction until the end of your next turn.\";\n\nlet content =`\n<div class=\"card clippled-bot\" style=margin:0px\">\n   <div class=\"lancer-header lancer-tech tech medium\">\n    <i class=\"cci cci-tech-full i--m i--light\"> </i>\n    <span>// BEND PROBABILITY // </span>\n  </div>\n   <div class=\"dice-roll lancer-dice-roll\">\n      <div class=\"dice-result\">\n         <div class=\"dice-formula lancer-dice-formula flexrow\">\n            <span style=\"text-align:left;margin-left:5px\">X: ${check1.terms[0].number}d${check1.terms[0].faces}</span>\n            <span class=\"dice-total lancer-dice-total major\">${check1.total}</span>\n         </div>\n         <div style=\"text-align:left\">\n            <div class=\"dice-tooltip\" style=\"display: none;\">\n               <section class=\"tooltip-part\">\n                  <div class=\"dice\">\n                     <header class=\"part-header flexrow\">\n                        <span>${check1.terms[0].number}d${check1.terms[0].faces}</span>\n                        <span class=\"part-total\">${check1.terms[0].total}</span>\n                     </header>\n                  </div>\n               </section>\n            </div>\n         </div>\n\t\t <div class=\"dice-result\">\n         <div class=\"dice-formula lancer-dice-formula flexrow\">\n            <span style=\"text-align:left;margin-left:5px\">Y: ${check2.terms[0].number}d${check2.terms[0].faces}</span>\n            <span class=\"dice-total lancer-dice-total major\">${check2.total}</span>\n         </div>\n         <div style=\"text-align:left\">\n            <div class=\"dice-tooltip\" style=\"display: none;\">\n               <section class=\"tooltip-part\">\n                  <div class=\"dice\">\n                     <header class=\"part-header flexrow\">\n                        <span>${check2.terms[0].number}d${check2.terms[0].faces}</span>\n                        <span class=\"part-total\">${check2.terms[0].total}</span>\n                     </header>\n                  </div>\n               </section>\n            </div>\n         </div>\n      </div>\n   </div>\n</div>\n<div class=\"card clipped\">\n    <div class=\"lancer-mini-header\">// TRIGGER //</div>\n        <span class=\"effect-text\">${triggerDesc}</span>\n    </div>\n</div>\n`;\n\nChatMessage.create({\n   type: CONST.CHAT_MESSAGE_TYPES.ROLL,\n   speaker: ChatMessage.getSpeaker({\n                actor: game.macros.getName(\"Get-Speaker\").execute()\n            }),\n   user: game.user._id,\n   content: content,\n   rolls: [check1,check2]\n});",
+  "folder": "l5AhmXZBrmXkYXTg",
+  "flags": {
+    "combat-utility-belt": {
+      "macroTrigger": ""
+    },
+    "advanced-macros": {
+      "runAsGM": false
+    },
+    "condition-lab-triggler": {
+      "macroTrigger": ""
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": null,
+    "modifiedTime": 1726245580705,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}

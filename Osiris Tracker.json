@@ -1,0 +1,31 @@
+{
+  "name": "Hurl into the Duat (Dice)",
+  "type": "script",
+  "scope": "global",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/magic/unholy/hands-circle-light-green.webp",
+  "command": "// Targets (just use the first)\nconst target = game.user.targets.first();\n\n// Cancel the macro if no target is selected\nif(!target)\n    return ui.notifications.error(\"Target a token.\");\n// Cancel the macro if no token is selected\nif(canvas.tokens.controlled.length != 1)\n    return ui.notifications.error(\"Select 1 token. You have \" + canvas.tokens.controlled.length + \" selected.\");\n\nHooks.once(\"lancer.postFlow.TechAttackFlow\", async (state, bool) => {\n    // Before we do anything, did it hit?\n    if(!state?.state?.data?.hit_results[0]?.hit)\n        return;\n    \n    // Icon names and paths\n    let iconId = \"duat_gate\";\n    let iconImg =  CONFIG.statusEffects.find(x => x.id === iconId).icon;// filepath of icon\n    \n    // Our Duat Count\n    let count = 0;\n    \n    // Need to apply icon before SIC can work\n    // This also means we are at the first stage\n    if(!token.document.hasStatusEffect(iconId)){\n        await game.macros.getName(\"toggleCondition\").execute({tokenId:token.id, condition:iconId, replace:false});\n        await EffectCounter.findCounter(token, iconImg).setValue(1); // Set icon to 1 to represent the first stage\n    }\n    \n    count = await EffectCounter.findCounterValue(token.document, iconImg) ?? 0;\n    console.log(target);\n    \n    // On each hit, increase heat by two\n    let heat = target.actor.system.heat.value;\n    let updateValues = [\"system.heat.value\", (heat+2)];\n    await game.macros.getName(\"updateToken\").execute({tokenId:target.id, args:updateValues});\n    \n    // Chat Options\n    let chatTitle = \"\";\n    let description = \"\";\n    // Add token image to list\n    let tokenImages = ` \n                        <div>\n                            <img class=\"lancer-hit-thumb\" src=\"${target.actor.img}\"/>\n                        </div>`;\n                    \n    switch(count){\n        case 0:{\n            // how'd we get here?\n            return ui.notifications.error(\"I AM PANICING AAAAAAAHHHHHH\");\n        }\n        case 1:{\n            // First Stage\n            await game.macros.getName(\"toggleCondition\").execute({tokenId:target.id, condition:\"follower_count\", replace:false});\n            chatTitle = \"// FIRST GATE //\";\n            description = \"Target's next standard movement is now under player control.\";\n            \n            // Finally, increment the counter\n            count++;\n            await EffectCounter.findCounter(token, iconImg).setValue(count);\n            break;\n        }\n        case 2:{\n            // Second Stage\n            // Inflict Slowed and Impaired\n            console.log(target.id);\n            await game.macros.getName(\"toggleCondition\").execute({tokenId:target.id, condition:\"slow\", replace:false});\n            await game.macros.getName(\"toggleCondition\").execute({tokenId:target.id, condition:\"impaired\", replace:false});\n            chatTitle = \"// SECOND GATE //\";\n            description = \"Target is impaired and slowed until the end of their next turn.\";\n            \n            // Finally, increment the counter\n            count++;\n            await EffectCounter.findCounter(token, iconImg).setValue(count);\n            break;\n        }\n        case 3:{\n            // Third Stage\n            // Inflict Stunned\n            await game.macros.getName(\"toggleCondition\").execute({tokenId:target.id, condition:\"stunned\", replace:false});\n            chatTitle = \"// THIRD GATE //\";\n            description = \"Target is stunned until the end of their next turn.\";\n            \n            // Finally, increment the counter\n            count++;\n            await EffectCounter.findCounter(token, iconImg).setValue(count);\n            break;\n        }\n        case 4:{\n            // Fourth Stage\n            // Change NPC to be controlled by the player\n            await game.macros.getName(\"toggleCondition\").execute({tokenId:target.id, condition:iconId, replace:false});\n            await game.macros.getName(\"updateTokenOwnership\").execute({tokenId:target.id});\n            \n            chatTitle = \"// FOURTH GATE //\";\n            description = \"Target is now an ally until the end of their next turn.\";\n            \n            // Finally, reset the counter to 1.\n            count = 1;\n            await EffectCounter.findCounter(token, iconImg).setValue(count);            \n            break;\n        }\n    }\n    // Chat Message\n    let msgContent = `<div class=\"card clipped-bot\" style=\"margin: 0px;\">\n\t\t\t\t<div class=\"card clipped\">\n\t\t\t\t\t<div class=\"lancer-mini-header\" >${chatTitle}</div>\n\t\t\t\t\t        <div class=\"lancer-mini-header\"> // EFFECT // </div>\n\t\t\t\t\t        <div class=\"effect-text\">\n\t\t\t\t\t            <ul>${description}</ul>\n\t\t\t\t\t        </div>\n\t\t\t\t\t\t<div class=\"lancer-hit\">\n                                                            <span>${tokenImages}</span>\n\t\t\t\t\t\t\t<div class=\"lancer-hit-text\">\n\t\t\t\t\t\t\t\t<span class=\"lancer-hit-text-name\"> has taken 2 <i class=\"cci cci-heat i--m damage--energy\"></i></span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t        </div>\n\t\t\t\t</div>\n                      </div>`\n    ChatMessage.create({ content: msgContent });   \n});\n    \n// Begin the regular tech attack\nconst item = await fromUuid(\"Actor.\" \n    + token.actor.id \n    + \".Item.\" \n    + token.actor.system.loadout.systems.find(x => x.value.name === 'OSIRIS-Class NHP').id);\nitem.beginActivationFlow(\"system.actions.0\");",
+  "folder": "l5AhmXZBrmXkYXTg",
+  "flags": {
+    "condition-lab-triggler": {
+      "macroTrigger": ""
+    },
+    "advanced-macros": {
+      "runForSpecificUser": ""
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1725315776378,
+    "modifiedTime": 1726234150969,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}
