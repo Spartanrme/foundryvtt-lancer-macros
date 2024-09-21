@@ -1,0 +1,28 @@
+{
+  "name": "Automate-Invades",
+  "type": "script",
+  "scope": "global",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "command": "// Some tech attack automation\n// Most tech attack \"invades\" have invade === yes\n// Basic tech attack & quick techs do not - so we need to check by name for what to do\n\nui.notifications.notify(\"Activating automation for invades.\");\n// Hook into the TechAttackFlow - this is run after all tech attacks\nHooks.on(\"lancer.postFlow.TechAttackFlow\", async (state, bool) => {\n    // Setup for chat messages\n    let statusApplied = false;\n    let tokenURL = ``;\n    let tempdamage = 0;\n    let dmgType = ``;\n\n    // Run it for each target hit\n    if(state.state.data.hit_results.length >= 1){\n        let hitResult = state.state.data.hit_results[0];\n        // Invade-Tagged System flow\n        if(hitResult.hit && state.state.data.invade){\n            let token = state.state.data.attack_rolls.targeted[0].target;\n            let actor = token.actor;\n            let id = token.document._id;\n            // Set values for chat message\n            statusApplied = true;\n            tokenURL = actor.img;\n            dmgType = `HEAT`\n            // On each hit, increase heat by two\n            let heat = actor.system.heat.value;\n            tempdamage = token.document.hasStatusEffect('heat-resistance') ? 1 : 2;\n            // Update Token\n            let updateValues = [\"system.heat.value\", (heat + tempdamage)];\n            await game.macros.getName(\"updateToken\").execute({tokenId:id, args:updateValues});\n        }\n        // Basic Tech Attack flow\n        else if(hitResult.hit && state.state.data.title.includes(\"TECH ATTACK\")){\n            let token = state.state.data.attack_rolls.targeted[0].target;\n            let actor = token.actor;\n            let id = token.document._id;\n            let result = await Dialog.confirm({\n                title: \"Basic Tech Attack\",\n                content: \"Apply Fragment Signal to target?\",\n                yes: () => { return true;},\n                no: () => {return false;},\n                defaultYes: false\n            });\n            if(result){\n                // Set values for chat message\n                statusApplied = true;\n                tokenURL = actor.img;\n                dmgType = `HEAT`;\n                // On each hit, increase heat by two\n                let heat = actor.system.heat.value;\n                tempdamage = token.document.hasStatusEffect('heat-resistance') ? 1 : 2;\n                // Update Token\n                let updateValues = [\"system.heat.value\", (heat + tempdamage)];\n                await game.macros.getName(\"updateToken\").execute({tokenId:id, args:updateValues});\n                // Don't apply impaired to PCs with Design Core Bonus\n                if(actor.type != \"mech\" || (actor.system?.pilot?.value.items.some((i) => i.system.lid === \"cb_superior_by_design\") != true)){\n                    dmgType += `, Impaired`;\n                    await game.macros.getName(\"toggleCondition\").execute({tokenId:id, condition:\"impaired\", replace:false});\n                }\n                // Don't apply slow to PCs\n                if(actor.type != \"mech\"){\n                    dmgType += `, Slowed`;\n                    await game.macros.getName(\"toggleCondition\").execute({tokenId:id, condition:\"slow\", replace:false});\n                } \n            }\n        }\n    }\n    if(statusApplied){\n        console.log(tempdamage);\n        console.log(dmgType);\n        console.log(\"HELLO\");\n        let msgContent = `<div class=\"card clipped-bot\" style=\"margin: 0px;\">\n            <div class=\"card clipped\">\n                <div class=\"lancer-mini-header\" >// DAMAGE APPLIED //</div>\n                    <div class=\"lancer-hit\">\n                        <div>\n                            <img class=\"lancer-hit-thumb\" src=\"${tokenURL}\" />\n                        </div>\n                        <div>\n                            <span style='word-break: break-all; word-wrap: break-word;'>has taken ${tempdamage} ${dmgType}</div>\n                        </div>\n                    </div>\n            </div>\n        </div>`\n\n        ChatMessage.create({ //comment this part out if you don't want stuff whispered to chat.\n        content: msgContent,\n        whisper: ChatMessage.getWhisperRecipients(\"GM\")\n        });\n    }\n    return;\n});",
+  "folder": "h33QOhEZ3uTO1lEM",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": "runAsWorldScript"
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726267891203,
+    "modifiedTime": 1726751404026,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}
