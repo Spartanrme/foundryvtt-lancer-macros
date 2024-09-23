@@ -1,0 +1,28 @@
+{
+  "name": "Get-NPC-Damage-Reductions",
+  "type": "script",
+  "scope": "global",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "command": "/*\nThis macro runs through an NPCs items and matches (using regex) all items containing keywords related to damage resistances or immunities. It then returns any array containing the effect text of each item matched.\n*/\n\nlet reductions = [];\n// Exit if nothing is selected or if the token type isn't 'npc'\nif(!token || token.actor.type != \"npc\"){\n    return reductions;\n}\n\n// Get all the NPC items\nlet items = token.actor.items;\nlet keywords = /Resistance|Immunity/;\n\n// Run through each NPC's items\nitems.forEach(x =>{\n    let system = x.system;\n    \n    // We want to filter by the following things:\n    // 1) It isn't destroyed\n    // 2) It is a trait (ignore reactions)\n    // 3) It contains one of the items in our keyword\n    if(foundry.utils.hasProperty(system, \"effect\") \n        && system.destroyed != true\n        && system.type === \"Trait\"\n        && system.effect.match(keywords) != null) {\n            reductions.push(system.effect);\n    }\n});\n\nreturn reductions;",
+  "folder": "Wc2hkEpWqTmPuMcu",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": ""
+    },
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726952753772,
+    "modifiedTime": 1727047257189,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}

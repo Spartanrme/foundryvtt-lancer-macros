@@ -1,0 +1,29 @@
+{
+  "name": "Get-NPC-Damage-Reactions",
+  "type": "script",
+  "scope": "global",
+  "author": "MvcpNQWP7WQx6BPR",
+  "img": "icons/svg/dice-target.svg",
+  "command": "/*\nThis macro runs through an NPCs items and matches (using regex) all items containing reactions.\n*/\n\nlet reactions = [];\n// Exit if nothing is selected or if the token type isn't 'npc'\nif(!token || token.actor.type != \"npc\"){\n    return reactions;\n}\n\n// Get all the NPC items\nlet items = token.actor.items;\nlet keywords = /Hit|Hits|Damage|Damages/i;\n\n// Run through each NPC's items\nitems.forEach(x =>{\n    let system = x.system;\n    \n    // We want to filter by the following things:\n    // 1) It isn't destroyed\n    // 2) It is a reaction\n    if(foundry.utils.hasProperty(system, \"trigger\") \n        && system.destroyed != true\n        && system.type === \"Reaction\"\n        && system.trigger.match(keywords) != null) {\n            reactions.push(system.trigger);\n    }\n});\nreturn reactions;",
+  "folder": "Wc2hkEpWqTmPuMcu",
+  "flags": {
+    "advanced-macros": {
+      "runForSpecificUser": ""
+    },
+    "core": {},
+    "exportSource": {
+      "world": "lancer-voidstorm",
+      "system": "lancer",
+      "coreVersion": "11.315",
+      "systemVersion": "2.2.4"
+    }
+  },
+  "_stats": {
+    "systemId": "lancer",
+    "systemVersion": "2.2.4",
+    "coreVersion": "11.315",
+    "createdTime": 1726952753772,
+    "modifiedTime": 1727049522583,
+    "lastModifiedBy": "MvcpNQWP7WQx6BPR"
+  }
+}
